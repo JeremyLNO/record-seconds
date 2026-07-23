@@ -432,6 +432,7 @@
 				DEVELOPMENT_TEAM = 2E6D4Q69QB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = "Video one sec";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Record Seconds uses the camera to film your one-second clips.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record Seconds uses the microphone to record sound with your clips.";
@@ -457,6 +458,7 @@
 				DEVELOPMENT_TEAM = 2E6D4Q69QB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = "Video one sec";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Record Seconds uses the camera to film your one-second clips.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record Seconds uses the microphone to record sound with your clips.";
