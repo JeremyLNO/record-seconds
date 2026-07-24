@@ -93,6 +93,11 @@ enum L {
         "transition_dissolve": [.en: "Dissolve", .fr: "Fondu", .es: "Disolución", .de: "Überblendung", .pt: "Dissolvência"],
         "title_card_end_default": [.en: "The End", .fr: "Fin", .es: "Fin", .de: "Ende", .pt: "Fim"],
 
+        // MARK: Onboarding
+        "onboarding_trial_title": [.en: "Your 7-day free trial has started", .fr: "Votre essai gratuit de 7 jours a commencé", .es: "Tu prueba gratuita de 7 días ha comenzado", .de: "Ihre 7-tägige kostenlose Testversion hat begonnen", .pt: "O seu teste gratuito de 7 dias começou"],
+        "onboarding_trial_body": [.en: "Every feature is unlocked for 7 days — no payment info needed.", .fr: "Toutes les fonctionnalités sont débloquées pendant 7 jours — aucune information de paiement requise.", .es: "Todas las funciones están desbloqueadas durante 7 días — no se requiere información de pago.", .de: "Alle Funktionen sind 7 Tage lang freigeschaltet — keine Zahlungsangaben erforderlich.", .pt: "Todas as funcionalidades estão desbloqueadas durante 7 dias — sem necessidade de dados de pagamento."],
+        "onboarding_get_started": [.en: "Get started", .fr: "Commencer", .es: "Empezar", .de: "Los geht's", .pt: "Começar"],
+
         // MARK: License paywall features
         "license_feature_projects_title": [.en: "Unlimited projects", .fr: "Projets illimités", .es: "Proyectos ilimitados", .de: "Unbegrenzte Projekte", .pt: "Projetos ilimitados"],
         "license_feature_projects_detail": [.en: "Create as many second-a-day projects as you like.", .fr: "Créez autant de projets « une seconde par jour » que vous voulez.", .es: "Crea tantos proyectos de un segundo al día como quieras.", .de: "Erstellen Sie so viele Ein-Sekunde-Projekte, wie Sie möchten.", .pt: "Crie tantos projetos de um segundo por dia quantos quiser."],
@@ -108,7 +113,7 @@ enum L {
         "quick_capture_needs_project_message": [.en: "Quick capture needs at least one project to save the clip into.", .fr: "La capture rapide a besoin d'au moins un projet pour y enregistrer le clip.", .es: "La captura rápida necesita al menos un proyecto en el que guardar el clip.", .de: "Für die Schnellaufnahme ist mindestens ein Projekt erforderlich, in dem der Clip gespeichert wird.", .pt: "A captura rápida precisa de pelo menos um projeto para guardar o clipe."],
 
         // MARK: Review prompt
-        "review_prompt_title": [.en: "Enjoying Record Seconds?", .fr: "Vous aimez Record Seconds ?", .es: "¿Te gusta Record Seconds?", .de: "Gefällt Ihnen Record Seconds?", .pt: "Está a gostar do Record Seconds?"],
+        "review_prompt_title": [.en: "Enjoying Video One Sec?", .fr: "Vous aimez Video One Sec ?", .es: "¿Te gusta Video One Sec?", .de: "Gefällt Ihnen Video One Sec?", .pt: "Está a gostar do Video One Sec?"],
         "review_prompt_message": [.en: "Let us know how it's going.", .fr: "Dites-nous comment ça se passe.", .es: "Cuéntanos cómo te va.", .de: "Sagen Sie uns, wie es läuft.", .pt: "Diga-nos como está a correr."],
         "quick_capture_button_label": [.en: "Quick capture", .fr: "Capture rapide", .es: "Captura rápida", .de: "Schnellaufnahme", .pt: "Captura rápida"],
 

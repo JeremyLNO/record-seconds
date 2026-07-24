@@ -14,13 +14,35 @@ struct RecordSecondsApp: App {
         }
         AppLicense.manager.startMonitoring()
         OneSignalConfig.startIfConfigured()
+
+        // Lets screenshot/test automation skip straight past onboarding, same convention
+        // as fasting-app / respire-app.
+        if CommandLine.arguments.contains("-skipOnboarding") {
+            UserDefaults.standard.set(true, forKey: OnboardingGate.completedKey)
+        }
     }
 
     var body: some Scene {
         WindowGroup {
-            AppGate()
+            OnboardingGate()
         }
         .modelContainer(container)
+    }
+}
+
+/// Shows the first-launch onboarding carousel once, then falls through to the
+/// existing `AppGate` (license check unchanged).
+private struct OnboardingGate: View {
+    static let completedKey = "onboarding.completed"
+
+    @AppStorage(completedKey) private var completed = false
+
+    var body: some View {
+        if completed {
+            AppGate()
+        } else {
+            OnboardingView { completed = true }
+        }
     }
 }
 

@@ -30,6 +30,7 @@
 		48AD2B2F00B7CC9CD756B3EF /* Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8729779425F95F926B5BC12F /* Clip.swift */; };
 		EE531228AB361329210B2350 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1605BD77D5971808823B0CF /* Project.swift */; };
 		66687EC6E00BE8ED43F721C4 /* OneSignalConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9449CAC5570B9AAB5FC1B4FD /* OneSignalConfig.swift */; };
+		5A50DD17620F406524D8ADE0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1792C07A40315DECDCBD9E1 /* OnboardingView.swift */; };
 		7511903EA9A3515F3538DCCB /* ClipPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317971368C3BCBD70DAD67ED /* ClipPlayerView.swift */; };
 		EB6B4F15809ACF93FF91E2FF /* ProjectPreviewPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53133E453E817CB23EA5D67 /* ProjectPreviewPlayer.swift */; };
 		CAED3B095F97A061680021B7 /* SingleShotPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732433A9B12AD94DAC993942 /* SingleShotPlayerView.swift */; };
@@ -67,6 +68,7 @@
 		8729779425F95F926B5BC12F /* Clip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clip.swift"; sourceTree = "<group>"; };
 		B1605BD77D5971808823B0CF /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Project.swift"; sourceTree = "<group>"; };
 		9449CAC5570B9AAB5FC1B4FD /* OneSignalConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OneSignalConfig.swift"; sourceTree = "<group>"; };
+		F1792C07A40315DECDCBD9E1 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OnboardingView.swift"; sourceTree = "<group>"; };
 		317971368C3BCBD70DAD67ED /* ClipPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClipPlayerView.swift"; sourceTree = "<group>"; };
 		A53133E453E817CB23EA5D67 /* ProjectPreviewPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProjectPreviewPlayer.swift"; sourceTree = "<group>"; };
 		732433A9B12AD94DAC993942 /* SingleShotPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SingleShotPlayerView.swift"; sourceTree = "<group>"; };
@@ -177,6 +179,14 @@
 			path = Notifications;
 			sourceTree = "<group>";
 		};
+		40C07222B08C08DA1262327F /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				F1792C07A40315DECDCBD9E1 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		E4FECCF8AA0F9EB59942BCAF /* Playback */ = {
 			isa = PBXGroup;
 			children = (
@@ -219,6 +229,7 @@
 				A3D996A387CA7C05C7D6A660 /* Localization */,
 				449C1A9F5E0DD1128A5584D2 /* Models */,
 				BCE72209DD9226327F44E625 /* Notifications */,
+				40C07222B08C08DA1262327F /* Onboarding */,
 				E4FECCF8AA0F9EB59942BCAF /* Playback */,
 				EC9BA702EFC440F13AB1BAA3 /* Projects */,
 				EF0D02A5E85E40E29E930D74 /* Settings */,
@@ -361,6 +372,7 @@
 				48AD2B2F00B7CC9CD756B3EF /* Clip.swift in Sources */,
 				EE531228AB361329210B2350 /* Project.swift in Sources */,
 				66687EC6E00BE8ED43F721C4 /* OneSignalConfig.swift in Sources */,
+				5A50DD17620F406524D8ADE0 /* OnboardingView.swift in Sources */,
 				7511903EA9A3515F3538DCCB /* ClipPlayerView.swift in Sources */,
 				EB6B4F15809ACF93FF91E2FF /* ProjectPreviewPlayer.swift in Sources */,
 				CAED3B095F97A061680021B7 /* SingleShotPlayerView.swift in Sources */,
@@ -432,11 +444,10 @@
 				DEVELOPMENT_TEAM = 2E6D4Q69QB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_CFBundleDisplayName = "Video one sec";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Record Seconds uses the camera to film your one-second clips.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record Seconds uses the microphone to record sound with your clips.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Record Seconds saves your exported movies to Photos.";
+				INFOPLIST_KEY_CFBundleDisplayName = "Video One Sec";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Video One Sec uses the camera to film your one-second clips.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Video One Sec uses the microphone to record sound with your clips.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Video One Sec saves your exported movies to Photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -458,11 +469,10 @@
 				DEVELOPMENT_TEAM = 2E6D4Q69QB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_CFBundleDisplayName = "Video one sec";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Record Seconds uses the camera to film your one-second clips.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Record Seconds uses the microphone to record sound with your clips.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Record Seconds saves your exported movies to Photos.";
+				INFOPLIST_KEY_CFBundleDisplayName = "Video One Sec";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Video One Sec uses the camera to film your one-second clips.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Video One Sec uses the microphone to record sound with your clips.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Video One Sec saves your exported movies to Photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

@@ -16,7 +16,7 @@ struct BrandFooter: View {
                 }
             }
             if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                Text("Record Seconds \(version)")
+                Text("Video One Sec \(version)")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
