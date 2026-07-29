@@ -10,6 +10,19 @@ enum AppLicense {
         purchaseURL: URL(string: "https://crazybeelabs.com/apps/record-seconds")!
     ))
 
+    /// True once the user actually holds a license. The 7-day trial is the "free version":
+    /// fully usable, but exports carry the watermark and always include the intro/end cards.
+    @MainActor static var isPaid: Bool {
+        #if DEBUG
+        // Lets a Simulator run exercise either tier without a real key, same spirit as
+        // the other debug launch flags.
+        if CommandLine.arguments.contains("-forcePaid") { return true }
+        if CommandLine.arguments.contains("-forceFree") { return false }
+        #endif
+        if case .licensed = manager.state { return true }
+        return false
+    }
+
     @MainActor static var features: [LicenseFeature] {
         [
             LicenseFeature(

@@ -24,11 +24,42 @@ enum TransitionType: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-/// A generated title card (intro or end screen) rendered from text over a solid color.
+/// Look of a generated title card: either the default Crazy Bee Labs honeycomb pattern
+/// or a plain solid colour.
+enum TitleCardTheme: String, CaseIterable, Identifiable, Codable {
+    case honeycomb
+    case solid
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .honeycomb: return L.t("card_theme_honeycomb")
+        case .solid: return L.t("card_theme_solid")
+        }
+    }
+}
+
+/// A generated title card (intro or end screen): text over the honeycomb pattern by
+/// default, or over `colorHex` when the solid theme is picked.
 struct TitleCardStyle: Codable, Equatable {
     var text: String
     var colorHex: String
     var duration: TimeInterval
+    /// Optional so cards persisted before themes existed still decode — those predate the
+    /// honeycomb look and are treated as the new default.
+    private var themeRaw: String?
+
+    var theme: TitleCardTheme {
+        get { themeRaw.flatMap(TitleCardTheme.init) ?? .honeycomb }
+        set { themeRaw = newValue.rawValue }
+    }
+
+    init(text: String, colorHex: String, duration: TimeInterval, theme: TitleCardTheme = .honeycomb) {
+        self.text = text
+        self.colorHex = colorHex
+        self.duration = duration
+        self.themeRaw = theme.rawValue
+    }
 
     static func intro(named projectName: String) -> TitleCardStyle {
         TitleCardStyle(text: projectName, colorHex: "1C1C1E", duration: 1.5)
@@ -53,6 +84,11 @@ final class Project {
     var transitionRaw: String = TransitionType.dissolve.rawValue
     private var introCardData: Data?
     private var endCardData: Data?
+
+    /// Intro/end cards can be switched off, but only with a license — `VideoExporter`
+    /// re-imposes them on the free trial rather than trusting these flags.
+    var includesIntroCard: Bool = true
+    var includesEndCard: Bool = true
 
     @Relationship(deleteRule: .cascade, inverse: \Clip.project)
     var clips: [Clip] = []

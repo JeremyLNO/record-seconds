@@ -144,6 +144,13 @@ enum L {
         "style_transition_section": [.en: "Transition", .fr: "Transition", .es: "Transición", .de: "Übergang", .pt: "Transição"],
         "style_text_placeholder": [.en: "Text", .fr: "Texte", .es: "Texto", .de: "Text", .pt: "Texto"],
         "style_color": [.en: "Background color", .fr: "Couleur de fond", .es: "Color de fondo", .de: "Hintergrundfarbe", .pt: "Cor de fundo"],
+        "style_theme": [.en: "Style", .fr: "Style", .es: "Estilo", .de: "Stil", .pt: "Estilo"],
+        "card_theme_honeycomb": [.en: "Honeycomb", .fr: "Nid d'abeille", .es: "Panal", .de: "Bienenwabe", .pt: "Favo de mel"],
+        "card_theme_solid": [.en: "Solid color", .fr: "Couleur unie", .es: "Color sólido", .de: "Einfarbig", .pt: "Cor sólida"],
+        "style_include_intro": [.en: "Include intro screen", .fr: "Inclure l'écran d'intro", .es: "Incluir pantalla de introducción", .de: "Startbildschirm einfügen", .pt: "Incluir ecrã de introdução"],
+        "style_include_end": [.en: "Include end screen", .fr: "Inclure l'écran de fin", .es: "Incluir pantalla final", .de: "Endbildschirm einfügen", .pt: "Incluir ecrã final"],
+        "style_cards_locked": [.en: "A license lets you remove the intro and end screens — and the watermark.", .fr: "Une licence permet de retirer les écrans d'intro et de fin — ainsi que le watermark.", .es: "Una licencia te permite quitar las pantallas de introducción y final, y la marca de agua.", .de: "Mit einer Lizenz können Sie Start- und Endbildschirm sowie das Wasserzeichen entfernen.", .pt: "Uma licença permite remover os ecrãs de introdução e final — e a marca de água."],
+        "style_get_license": [.en: "Get a license", .fr: "Obtenir une licence", .es: "Conseguir una licencia", .de: "Lizenz erhalten", .pt: "Obter uma licença"],
 
         // MARK: Export
         "export_in_progress": [.en: "Rendering your movie…", .fr: "Rendu du film en cours…", .es: "Renderizando tu película…", .de: "Ihr Film wird gerendert…", .pt: "A processar o seu filme…"],

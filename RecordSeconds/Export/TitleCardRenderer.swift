@@ -2,13 +2,18 @@ import SwiftUI
 import AVFoundation
 import UIKit
 
-/// Renders a project's intro/end screen (text over a solid color) as a still image,
-/// and — for export — as a short static-image video segment that splices into the
-/// composition exactly like any other clip.
+/// Renders a project's intro/end screen as a still image, and — for export — as a short
+/// static-image video segment that splices into the composition exactly like any other
+/// clip.
+///
+/// Cards are rendered WITHOUT the watermark: on export it is composited over the whole
+/// timeline (cards included) by `VideoExporter`, and in the in-app preview it is overlaid
+/// by the player — baking it in here as well would draw it twice.
 enum TitleCardRenderer {
     @MainActor
     static func image(for style: TitleCardStyle, size: CGSize) -> UIImage {
-        let content = TitleCardContentView(style: style).frame(width: size.width, height: size.height)
+        let content = TitleCardContentView(style: style, size: size)
+            .frame(width: size.width, height: size.height)
         let renderer = ImageRenderer(content: content)
         renderer.scale = 2
         return renderer.uiImage ?? UIImage()
@@ -83,14 +88,37 @@ enum TitleCardRenderer {
 
 private struct TitleCardContentView: View {
     let style: TitleCardStyle
+    let size: CGSize
+
+    /// Honeycomb cards use dark honey text on the cream field; solid cards keep white.
+    private var textColor: Color {
+        style.theme == .honeycomb
+            ? Color(red: 0.400, green: 0.286, blue: 0.043)
+            : .white
+    }
+
     var body: some View {
         ZStack {
-            Color(hex: style.colorHex)
+            switch style.theme {
+            case .honeycomb:
+                // Seed from the text so intro and end cards differ, while any given card
+                // redraws identically for preview and export.
+                HoneycombBackground(seed: Self.seed(for: style.text))
+            case .solid:
+                Color(hex: style.colorHex)
+            }
+
             Text(style.text)
-                .font(.system(size: 44, weight: .bold))
-                .foregroundStyle(.white)
+                .font(.system(size: size.height * 0.075, weight: .heavy, design: .rounded))
+                .foregroundStyle(textColor)
                 .multilineTextAlignment(.center)
-                .padding(24)
+                .shadow(color: .white.opacity(style.theme == .honeycomb ? 0.7 : 0), radius: size.height * 0.006)
+                .padding(size.width * 0.1)
         }
+    }
+
+    private static func seed(for text: String) -> UInt64 {
+        // Stable across launches, unlike Hasher's per-process seeding.
+        text.unicodeScalars.reduce(UInt64(5381)) { ($0 &* 33) &+ UInt64($1.value) }
     }
 }

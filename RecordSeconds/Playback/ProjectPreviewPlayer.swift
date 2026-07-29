@@ -30,6 +30,7 @@ struct ProjectPreviewPlayer: View {
     @State private var items: [PreviewItem] = []
     @State private var index = 0
     @State private var isReady = false
+    @State private var showsWatermark = false
 
     var body: some View {
         ZStack {
@@ -57,6 +58,18 @@ struct ProjectPreviewPlayer: View {
                 }
                 .padding()
                 Spacer()
+            }
+
+            if showsWatermark {
+                GeometryReader { geo in
+                    VStack {
+                        Spacer()
+                        Watermark.Badge(cardHeight: geo.size.height)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom, geo.size.height * Watermark.bottomInsetRatio)
+                    }
+                }
+                .allowsHitTesting(false)
             }
         }
         .task { await buildItems() }
@@ -97,11 +110,22 @@ struct ProjectPreviewPlayer: View {
     @MainActor
     private func buildItems() async {
         let size = CGSize(width: 720, height: 1280)
-        let introImage = TitleCardRenderer.image(for: project.introCard, size: size)
-        let endImage = TitleCardRenderer.image(for: project.endCard, size: size)
-        items = [.title(image: introImage, duration: project.introCard.duration)]
-            + project.orderedClips.map { PreviewItem.clip($0) }
-            + [.title(image: endImage, duration: project.endCard.duration)]
+        // Mirror exactly what an export would produce, so the preview is honest about
+        // both the cards and the watermark.
+        let plan = ExportPlan(project: project, isPaid: AppLicense.isPaid)
+        showsWatermark = plan.showsWatermark
+
+        var built: [PreviewItem] = []
+        if plan.includesIntro {
+            built.append(.title(image: TitleCardRenderer.image(for: project.introCard, size: size),
+                                duration: project.introCard.duration))
+        }
+        built += project.orderedClips.map { PreviewItem.clip($0) }
+        if plan.includesEnd {
+            built.append(.title(image: TitleCardRenderer.image(for: project.endCard, size: size),
+                                duration: project.endCard.duration))
+        }
+        items = built
         isReady = true
     }
 }

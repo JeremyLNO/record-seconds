@@ -31,7 +31,12 @@ enum TransitionEngine {
             let trackA = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid),
             let trackB = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         else { throw CocoaError(.fileWriteUnknown) }
-        let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+
+        // Created lazily: generated title cards are silent, and clips can be too. An audio
+        // track that exists but never receives a segment has a NaN duration, which makes
+        // AVAssetExportSession reject the whole composition with the opaque
+        // AVErrorOperationNotSupportedForAsset (-11838).
+        var audioTrack: AVMutableCompositionTrack?
 
         let renderSize = await Self.renderSize(forFirstAssetAt: segmentURLs[0])
         let dissolve = CMTime(seconds: transition.duration, preferredTimescale: 600)
@@ -47,8 +52,11 @@ enum TransitionEngine {
             let track = (i % 2 == 0) ? trackA : trackB
             let timeRange = CMTimeRange(start: .zero, duration: assetDuration)
             try track.insertTimeRange(timeRange, of: videoAssetTrack, at: cursor)
-            if let audioTrack, let audioAssetTrack = try? await asset.loadTracks(withMediaType: .audio).first {
-                try? audioTrack.insertTimeRange(timeRange, of: audioAssetTrack, at: cursor)
+            if let audioAssetTrack = try? await asset.loadTracks(withMediaType: .audio).first {
+                if audioTrack == nil {
+                    audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+                }
+                try? audioTrack?.insertTimeRange(timeRange, of: audioAssetTrack, at: cursor)
             }
             let transform = await layerTransform(for: videoAssetTrack, renderSize: renderSize)
             placements.append(Placement(track: track, transform: transform, start: cursor, duration: assetDuration))
@@ -58,6 +66,12 @@ enum TransitionEngine {
             } else {
                 cursor = cursor + assetDuration
             }
+        }
+
+        // Belt and braces: an insert can still fail, and shipping an empty audio track is
+        // exactly what breaks the export.
+        if let audioTrack, audioTrack.segments.isEmpty {
+            composition.removeTrack(audioTrack)
         }
 
         var instructions: [AVMutableVideoCompositionInstruction] = []
