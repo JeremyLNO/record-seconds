@@ -340,6 +340,13 @@ def app_target_common():
         'ENABLE_PREVIEWS = YES;',
         'GENERATE_INFOPLIST_FILE = YES;',
         'INFOPLIST_KEY_CFBundleDisplayName = "Video One Sec";',
+        # The app only uses standard HTTPS/TLS, no custom crypto — declaring this up
+        # front stops App Store Connect asking the App Encryption Documentation
+        # question on every upload. It must live HERE and not be hand-added to the
+        # generated project.pbxproj: this script rewrites that file wholesale, so an
+        # edit made there is silently dropped on the next run (which is exactly how
+        # the prompt came back after commit 02aef36).
+        'INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;',
         'INFOPLIST_KEY_NSCameraUsageDescription = "Video One Sec uses the camera to film your one-second clips.";',
         'INFOPLIST_KEY_NSMicrophoneUsageDescription = "Video One Sec uses the microphone to record sound with your clips.";',
         'INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Video One Sec saves your exported movies to Photos.";',

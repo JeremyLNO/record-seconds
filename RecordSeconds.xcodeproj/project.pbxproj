@@ -445,6 +445,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Video One Sec";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Video One Sec uses the camera to film your one-second clips.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Video One Sec uses the microphone to record sound with your clips.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Video One Sec saves your exported movies to Photos.";
@@ -470,6 +471,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Video One Sec";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Video One Sec uses the camera to film your one-second clips.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Video One Sec uses the microphone to record sound with your clips.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Video One Sec saves your exported movies to Photos.";
