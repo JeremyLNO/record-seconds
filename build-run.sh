@@ -25,7 +25,7 @@ open -a Simulator || true
 
 echo "▶︎ Installing…"
 xcrun simctl install "$DEV" "$APP"
-xcrun simctl terminate "$DEV" company.lno.recordseconds 2>/dev/null || true
+xcrun simctl terminate "$DEV" company.lno.videoonesec 2>/dev/null || true
 
 echo "▶︎ Launching with: $*"
-xcrun simctl launch "$DEV" company.lno.recordseconds "$@"
+xcrun simctl launch "$DEV" company.lno.videoonesec "$@"

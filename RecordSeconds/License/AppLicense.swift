@@ -6,7 +6,7 @@ import CrazyBeeLicense
 enum AppLicense {
     @MainActor static let manager = LicenseManager(config: .init(
         apiBaseURL: URL(string: "https://crazybeelabs.com")!,
-        bundleId: "company.lno.recordseconds",
+        bundleId: "company.lno.videoonesec",
         purchaseURL: URL(string: "https://crazybeelabs.com/apps/record-seconds")!
     ))
 

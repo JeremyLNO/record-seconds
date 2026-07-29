@@ -15,7 +15,7 @@ import hashlib
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PROJ = "RecordSeconds"
-BUNDLE_ID = "company.lno.recordseconds"
+BUNDLE_ID = "company.lno.videoonesec"
 DEVELOPMENT_TEAM = "2E6D4Q69QB"
 SRC_DIR = "RecordSeconds"
 

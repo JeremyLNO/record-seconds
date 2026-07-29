@@ -4,7 +4,7 @@ import Security
 /// Minimal Keychain string storage — used only for the CrazyBeeLabs account bearer
 /// token (unrelated to app licensing, which has its own storage in CrazyBeeLicense).
 enum KeychainStore {
-    private static let service = "company.lno.recordseconds.account"
+    private static let service = "company.lno.videoonesec.account"
 
     static func set(_ value: String, forKey key: String) {
         let data = Data(value.utf8)

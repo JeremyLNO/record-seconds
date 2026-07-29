@@ -18,7 +18,7 @@ final class CaptureEngine: NSObject, ObservableObject {
 
     private let movieOutput = AVCaptureMovieFileOutput()
     private var completion: ((URL?) -> Void)?
-    private let queue = DispatchQueue(label: "company.lno.recordseconds.capture")
+    private let queue = DispatchQueue(label: "company.lno.videoonesec.capture")
 
     func configureIfNeeded(quality: VideoQuality) {
         guard AVCaptureDevice.default(for: .video) != nil else {
