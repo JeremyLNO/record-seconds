@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import AVFoundation
 
 @Model
 final class Clip {
@@ -46,15 +47,27 @@ enum VideoStore {
 
     /// Moves a freshly recorded/imported movie file into permanent storage and
     /// creates its `Clip`, appended to the end of `project`.
+    ///
+    /// The real recorded length is read back from the file rather than assumed from the
+    /// settings value — `maxRecordedDuration` stops on a frame boundary, so an actual
+    /// clip is never exactly 1.000s.
     @discardableResult
-    static func saveCapturedClip(from tempURL: URL, into project: Project, duration: Double, modelContext: ModelContext) throws -> Clip {
+    static func saveCapturedClip(from tempURL: URL, into project: Project, duration: Double, modelContext: ModelContext) async throws -> Clip {
         let destination = newFileURL()
         try FileManager.default.moveItem(at: tempURL, to: destination)
+
+        let actualDuration = (try? await AVURLAsset(url: destination).load(.duration).seconds) ?? duration
+        let clipDuration = actualDuration.isFinite && actualDuration > 0 ? actualDuration : duration
+
         let nextIndex = (project.clips.map(\.sortIndex).max() ?? -1) + 1
-        let clip = Clip(filename: destination.lastPathComponent, duration: duration, sortIndex: nextIndex)
-        clip.project = project
+        let clip = Clip(filename: destination.lastPathComponent, duration: clipDuration, sortIndex: nextIndex)
+        // Insert before wiring the relationship so both sides live in the same context,
+        // then flush explicitly — the capture screen dismisses immediately after this
+        // and must not race SwiftData's autosave.
         modelContext.insert(clip)
+        clip.project = project
         project.lastUsedAt = Date()
+        try modelContext.save()
         return clip
     }
 }

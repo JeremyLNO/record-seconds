@@ -3,11 +3,11 @@ import SwiftData
 import PhotosUI
 import UniformTypeIdentifiers
 
-/// Full-screen capture flow: live camera, one-tap fixed-duration recording, a
-/// confirm/retake step, then save into `project`. The Simulator has no camera, so
-/// `cameraAvailable == false` swaps in a "import a video from Photos" fallback that
-/// trims the picked video to the configured duration — this keeps the whole capture
-/// flow testable without a physical device.
+/// Full-screen capture flow: live camera, one-tap fixed-duration recording, then the
+/// clip is saved straight into `project` and the screen closes — filming a clip always
+/// lands you back in the app. The Simulator has no camera, so `cameraAvailable == false`
+/// swaps in a "import a video from Photos" fallback that trims the picked video to the
+/// configured duration — this keeps the whole capture flow testable without a device.
 struct CameraCaptureView: View {
     let project: Project
 
@@ -16,22 +16,22 @@ struct CameraCaptureView: View {
     @StateObject private var engine = CaptureEngine()
     @ObservedObject private var settings = AppSettings.shared
 
-    @State private var reviewURL: URL?
     @State private var pickerItem: PhotosPickerItem?
     @State private var isImporting = false
     @State private var importError: String?
+    @State private var justSaved = false
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            if let reviewURL {
-                reviewStep(url: reviewURL)
-            } else if engine.cameraAvailable {
+            if engine.cameraAvailable {
                 liveCaptureStep
             } else {
                 simulatorFallbackStep
             }
+
+            if justSaved { savedConfirmation }
 
             VStack {
                 HStack {
@@ -46,6 +46,10 @@ struct CameraCaptureView: View {
                             .background(.black.opacity(0.4), in: Circle())
                     }
                     Spacer()
+                    if engine.isRecording { recordingBadge }
+                    Spacer()
+                    // Balances the close button so the REC badge stays centered.
+                    Color.clear.frame(width: 44, height: 44)
                 }
                 .padding()
                 Spacer()
@@ -54,6 +58,40 @@ struct CameraCaptureView: View {
         .onAppear { engine.configureIfNeeded(quality: settings.videoQuality) }
         .onDisappear { engine.stopSession() }
         .task(id: pickerItem) { await handlePickerSelection() }
+    }
+
+    // MARK: - Recording indicator
+
+    /// Pulsing "REC" pill shown at the top while filming.
+    private var recordingBadge: some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(.red)
+                .frame(width: 10, height: 10)
+                .opacity(engine.isRecording ? 1 : 0.2)
+                .animation(.easeInOut(duration: 0.5).repeatForever(autoreverses: true), value: engine.isRecording)
+            Text(L.t("capture_recording"))
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.white)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 7)
+        .background(.black.opacity(0.55), in: Capsule())
+        .transition(.opacity)
+    }
+
+    private var savedConfirmation: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 52))
+                .foregroundStyle(.white)
+            Text(L.t("capture_clip_saved"))
+                .font(.headline)
+                .foregroundStyle(.white)
+        }
+        .padding(28)
+        .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .transition(.opacity)
     }
 
     // MARK: - Live camera
@@ -65,13 +103,29 @@ struct CameraCaptureView: View {
 
             VStack {
                 Spacer()
+                if let importError {
+                    Text(importError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .padding(.bottom, 12)
+                }
                 Button {
                     engine.record(duration: settings.clipDuration) { url in
-                        reviewURL = url
+                        guard let url else {
+                            importError = L.t("capture_error_recording")
+                            return
+                        }
+                        saveClip(from: url)
                     }
                 } label: {
                     ZStack {
-                        Circle().stroke(.white, lineWidth: 4).frame(width: 76, height: 76)
+                        // Ring fills up as the fixed-duration recording elapses.
+                        Circle().stroke(.white.opacity(0.45), lineWidth: 4).frame(width: 76, height: 76)
+                        Circle()
+                            .trim(from: 0, to: engine.recordingProgress)
+                            .stroke(.red, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                            .rotationEffect(.degrees(-90))
+                            .frame(width: 76, height: 76)
                         Circle()
                             .fill(engine.isRecording ? .red : .white)
                             .frame(width: engine.isRecording ? 34 : 62, height: engine.isRecording ? 34 : 62)
@@ -95,38 +149,6 @@ struct CameraCaptureView: View {
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
-        }
-    }
-
-    // MARK: - Review / retake
-
-    private func reviewStep(url: URL) -> some View {
-        VStack(spacing: 24) {
-            Spacer()
-            ClipPlayerView(url: url)
-                .aspectRatio(9.0 / 16.0, contentMode: .fit)
-                .cornerRadius(16)
-                .padding(.horizontal, 24)
-            Spacer()
-            HStack(spacing: 32) {
-                Button {
-                    try? FileManager.default.removeItem(at: url)
-                    reviewURL = nil
-                } label: {
-                    Label(L.t("capture_retake"), systemImage: "arrow.counterclockwise")
-                        .foregroundStyle(.white)
-                }
-                Button {
-                    saveClip(from: url)
-                } label: {
-                    Label(L.t("capture_use_clip"), systemImage: "checkmark")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.accentColor)
-            }
-            .padding(.bottom, 48)
         }
     }
 
@@ -165,7 +187,7 @@ struct CameraCaptureView: View {
         do {
             guard let movie = try await pickerItem.loadTransferable(type: TransferableMovie.self) else { return }
             let trimmed = try await VideoTrimmer.trim(sourceURL: movie.url, to: settings.clipDuration)
-            reviewURL = trimmed
+            saveClip(from: trimmed)
         } catch {
             importError = error.localizedDescription
         }
@@ -174,13 +196,24 @@ struct CameraCaptureView: View {
 
     // MARK: - Save
 
+    /// Saves the clip into the project, flashes a confirmation, then closes the capture
+    /// screen so the user lands back in the app with the clip already in the project.
     private func saveClip(from url: URL) {
-        do {
-            try VideoStore.saveCapturedClip(from: url, into: project, duration: settings.clipDuration, modelContext: modelContext)
-            engine.stopSession()
-            dismiss()
-        } catch {
-            importError = error.localizedDescription
+        Task {
+            do {
+                try await VideoStore.saveCapturedClip(
+                    from: url,
+                    into: project,
+                    duration: settings.clipDuration,
+                    modelContext: modelContext
+                )
+                justSaved = true
+                engine.stopSession()
+                try? await Task.sleep(nanoseconds: 700_000_000)
+                dismiss()
+            } catch {
+                importError = error.localizedDescription
+            }
         }
     }
 }

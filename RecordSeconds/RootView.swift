@@ -47,24 +47,33 @@ struct RootView: View {
         guard !UserDefaults.standard.bool(forKey: key) else { return }
         UserDefaults.standard.set(true, forKey: key)
         guard projects.isEmpty else { return }
-        modelContext.insert(Project(name: "my video project", sortIndex: 0))
+        let project = Project(name: "my video project", sortIndex: 0)
+        modelContext.insert(project)
+        // Also becomes the quick-capture default target, so clips land somewhere sensible
+        // even if the user switches Settings to "Default project" without picking one.
+        settings.quickCaptureDefaultProjectID = project.id
     }
 
     private func startQuickCapture() {
-        guard !projects.isEmpty else {
-            showNeedsProjectAlert = true
-            return
-        }
         switch settings.quickCaptureMode {
         case .lastUsedProject:
-            quickCaptureTarget = projects.max { $0.lastUsedAt < $1.lastUsedAt }
+            quickCaptureTarget = lastUsedProject ?? defaultProject
         case .defaultProject:
-            if let id = settings.quickCaptureDefaultProjectID,
-               let match = projects.first(where: { $0.id == id }) {
-                quickCaptureTarget = match
-            } else {
-                quickCaptureTarget = projects.max { $0.lastUsedAt < $1.lastUsedAt }
-            }
+            quickCaptureTarget = defaultProject ?? lastUsedProject
         }
+        // Nothing to capture into at all (every project was deleted) — offer to create one.
+        if quickCaptureTarget == nil { showNeedsProjectAlert = true }
+    }
+
+    private var lastUsedProject: Project? {
+        projects.max { $0.lastUsedAt < $1.lastUsedAt }
+    }
+
+    private var defaultProject: Project? {
+        if let id = settings.quickCaptureDefaultProjectID,
+           let match = projects.first(where: { $0.id == id }) {
+            return match
+        }
+        return projects.first
     }
 }

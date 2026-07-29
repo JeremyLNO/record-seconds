@@ -119,8 +119,9 @@ enum L {
 
         // MARK: Capture
         "capture_permission_denied": [.en: "Camera access is required to record clips. Enable it in Settings.", .fr: "L'accès à la caméra est nécessaire pour filmer. Activez-le dans Réglages.", .es: "Se requiere acceso a la cámara para grabar clips. Actívalo en Ajustes.", .de: "Für die Aufnahme von Clips ist Kamerazugriff erforderlich. Aktivieren Sie ihn in den Einstellungen.", .pt: "É necessário acesso à câmara para gravar clipes. Ative-o nas Definições."],
-        "capture_retake": [.en: "Retake", .fr: "Refaire", .es: "Repetir", .de: "Wiederholen", .pt: "Repetir"],
-        "capture_use_clip": [.en: "Use clip", .fr: "Utiliser", .es: "Usar clip", .de: "Clip verwenden", .pt: "Usar clipe"],
+        "capture_recording": [.en: "REC", .fr: "REC", .es: "REC", .de: "REC", .pt: "REC"],
+        "capture_clip_saved": [.en: "Clip saved", .fr: "Clip enregistré", .es: "Clip guardado", .de: "Clip gespeichert", .pt: "Clipe guardado"],
+        "capture_error_recording": [.en: "That clip couldn't be recorded. Please try again.", .fr: "Ce clip n'a pas pu être enregistré. Veuillez réessayer.", .es: "No se pudo grabar ese clip. Inténtalo de nuevo.", .de: "Dieser Clip konnte nicht aufgenommen werden. Bitte versuchen Sie es erneut.", .pt: "Não foi possível gravar esse clipe. Tente novamente."],
         "capture_simulator_no_camera": [.en: "No camera available here. Import a video instead to try the flow.", .fr: "Pas de caméra disponible ici. Importez une vidéo pour tester le flux.", .es: "No hay cámara disponible aquí. Importa un vídeo para probar el flujo.", .de: "Hier ist keine Kamera verfügbar. Importieren Sie stattdessen ein Video, um den Ablauf zu testen.", .pt: "Não há câmara disponível aqui. Importe um vídeo para testar o fluxo."],
         "capture_import_from_photos": [.en: "Import from Photos", .fr: "Importer depuis Photos", .es: "Importar desde Fotos", .de: "Aus Fotos importieren", .pt: "Importar de Fotos"],
 

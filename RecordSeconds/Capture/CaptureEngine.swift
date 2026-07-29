@@ -16,9 +16,16 @@ final class CaptureEngine: NSObject, ObservableObject {
     @Published var cameraAvailable = true
     @Published var permissionDenied = false
 
+    /// 0...1 progress through the current fixed-duration recording, for the on-screen
+    /// recording indicator.
+    @Published var recordingProgress: Double = 0
+
     private let movieOutput = AVCaptureMovieFileOutput()
     private var completion: ((URL?) -> Void)?
     private let queue = DispatchQueue(label: "company.lno.videoonesec.capture")
+    private var progressTimer: Timer?
+    private var recordingStartedAt: Date?
+    private var recordingDuration: TimeInterval = 1
 
     func configureIfNeeded(quality: VideoQuality) {
         guard AVCaptureDevice.default(for: .video) != nil else {
@@ -71,21 +78,51 @@ final class CaptureEngine: NSObject, ObservableObject {
     func record(duration: TimeInterval, completion: @escaping (URL?) -> Void) {
         guard !isRecording else { return }
         self.completion = completion
+        recordingDuration = duration
         movieOutput.maxRecordedDuration = CMTime(seconds: duration, preferredTimescale: 600)
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("\(UUID().uuidString).mov")
         isRecording = true
+        recordingProgress = 0
+        recordingStartedAt = Date()
+        startProgressTimer()
         queue.async { [weak self] in
             guard let self else { return }
             self.movieOutput.startRecording(to: url, recordingDelegate: self)
         }
     }
+
+    private func startProgressTimer() {
+        progressTimer?.invalidate()
+        progressTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
+            guard let self, let started = self.recordingStartedAt else { return }
+            let elapsed = Date().timeIntervalSince(started)
+            self.recordingProgress = min(1, elapsed / self.recordingDuration)
+        }
+    }
+
+    private func stopProgressTimer() {
+        progressTimer?.invalidate()
+        progressTimer = nil
+        recordingStartedAt = nil
+    }
 }
 
 extension CaptureEngine: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        // Hitting `maxRecordedDuration` reports a non-nil error (AVError.maximumDurationReached)
+        // even though the file is complete and usable — that's the normal end of every
+        // fixed-duration clip here. AVFoundation flags a genuinely usable recording with
+        // AVErrorRecordingSuccessfullyFinishedKey, so treating any error as failure would
+        // silently discard every clip we record.
+        var usable = true
+        if let error = error as NSError? {
+            usable = error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as? Bool ?? false
+        }
         DispatchQueue.main.async {
+            self.stopProgressTimer()
             self.isRecording = false
-            self.completion?(error == nil ? outputFileURL : nil)
+            self.recordingProgress = 0
+            self.completion?(usable ? outputFileURL : nil)
             self.completion = nil
         }
     }
