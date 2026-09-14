@@ -8,7 +8,7 @@ import OneSignalFramework
 /// without push until Jeremy supplies real OneSignal credentials.
 enum OneSignalConfig {
     /// Replace with the real OneSignal App ID once created on onesignal.com.
-    static let appID: String? = nil
+    static let appID: String? = "56552fac-ce5e-414d-a1df-9ea5f76ae7ed"
 
     static func startIfConfigured() {
         guard let appID, !appID.isEmpty else { return }

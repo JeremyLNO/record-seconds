@@ -7,8 +7,8 @@ diff-friendly. Single app target — no unit/UI test bundles, no extensions.
 
 Depends on one local Swift package (CrazyBeeLicense, at ../crazybee-license-kit) via
 an XCLocalSwiftPackageReference, and on one remote package (OneSignal) via an
-XCRemoteSwiftPackageReference. OneSignal stays a runtime no-op until a real App ID is
-set in Notifications/OneSignalConfig.swift.
+XCRemoteSwiftPackageReference. The OneSignal App ID lives in
+Notifications/OneSignalConfig.swift; set it to nil and the SDK is never initialised.
 """
 import os
 import hashlib
