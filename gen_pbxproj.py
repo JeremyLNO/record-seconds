@@ -6,9 +6,9 @@ nested PBXGroups. Deterministic UUIDs (hash of a role key) so re-runs are stable
 diff-friendly. Single app target — no unit/UI test bundles, no extensions.
 
 Depends on one local Swift package (CrazyBeeLicense, at ../crazybee-license-kit) via
-an XCLocalSwiftPackageReference. OneSignal is deliberately NOT added here — until a
-real App ID is configured it's a no-op (see Notifications/OneSignalConfig.swift), so
-skipping the remote package keeps builds fast and network-free.
+an XCLocalSwiftPackageReference, and on one remote package (OneSignal) via an
+XCRemoteSwiftPackageReference. OneSignal stays a runtime no-op until a real App ID is
+set in Notifications/OneSignalConfig.swift.
 """
 import os
 import hashlib
@@ -22,6 +22,13 @@ SRC_DIR = "RecordSeconds"
 LOCAL_PACKAGES = [
     # (name, relative path, [product names])
     ("CrazyBeeLicense", "../crazybee-license-kit", ["CrazyBeeLicense"]),
+]
+
+# (name, repository URL, exact version, [product names]). Pinned to an exact version on
+# OneSignal's Stable track — a version *range* resolves to their "Current" track instead.
+# Only `OneSignalFramework` is linked (no InAppMessages / Location).
+REMOTE_PACKAGES = [
+    ("OneSignal-XCFramework", "https://github.com/OneSignal/OneSignal-XCFramework", "5.5.1", ["OneSignalFramework"]),
 ]
 
 
@@ -95,6 +102,11 @@ pkg_refs = {}
 product_deps = {}
 product_build_files = {}
 for name, path, products in LOCAL_PACKAGES:
+    pkg_refs[name] = uid("pkgref." + name)
+    for prod in products:
+        product_deps[prod] = uid("proddep." + prod)
+        product_build_files[prod] = uid("buildfile.product." + prod)
+for name, url, version, products in REMOTE_PACKAGES:
     pkg_refs[name] = uid("pkgref." + name)
     for prod in products:
         product_deps[prod] = uid("proddep." + prod)
@@ -257,6 +269,8 @@ L('\t\t\tmainGroup = %s;' % main_group)
 L('\t\t\tpackageReferences = (')
 for name, path, products in LOCAL_PACKAGES:
     L('\t\t\t\t%s /* XCLocalSwiftPackageReference "%s" */,' % (pkg_refs[name], path))
+for name, url, version, products in REMOTE_PACKAGES:
+    L('\t\t\t\t%s /* XCRemoteSwiftPackageReference "%s" */,' % (pkg_refs[name], name))
 L('\t\t\t);')
 L('\t\t\tproductRefGroup = %s /* Products */;' % products_group)
 L('\t\t\tprojectDirPath = "";')
@@ -285,7 +299,27 @@ if LOCAL_PACKAGES:
             L('\t\t\tpackage = %s /* XCLocalSwiftPackageReference "%s" */;' % (pkg_refs[name], path))
             L('\t\t\tproductName = %s;' % prod)
             L('\t\t};')
+    for name, url, version, products in REMOTE_PACKAGES:
+        for prod in products:
+            L('\t\t%s /* %s */ = {' % (product_deps[prod], prod))
+            L('\t\t\tisa = XCSwiftPackageProductDependency;')
+            L('\t\t\tpackage = %s /* XCRemoteSwiftPackageReference "%s" */;' % (pkg_refs[name], name))
+            L('\t\t\tproductName = %s;' % prod)
+            L('\t\t};')
     L("/* End XCSwiftPackageProductDependency section */")
+
+if REMOTE_PACKAGES:
+    L("\n/* Begin XCRemoteSwiftPackageReference section */")
+    for name, url, version, products in REMOTE_PACKAGES:
+        L('\t\t%s /* XCRemoteSwiftPackageReference "%s" */ = {' % (pkg_refs[name], name))
+        L('\t\t\tisa = XCRemoteSwiftPackageReference;')
+        L('\t\t\trepositoryURL = "%s";' % url)
+        L('\t\t\trequirement = {')
+        L('\t\t\t\tkind = exactVersion;')
+        L('\t\t\t\tversion = %s;' % version)
+        L('\t\t\t};')
+        L('\t\t};')
+    L("/* End XCRemoteSwiftPackageReference section */")
 
 # ---- PBXResourcesBuildPhase ---------------------------------------------------
 L("\n/* Begin PBXResourcesBuildPhase section */")
@@ -334,6 +368,7 @@ def app_target_common():
     return [
         'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;',
         'ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;',
+        'CODE_SIGN_ENTITLEMENTS = RecordSeconds/RecordSeconds.entitlements;',
         'CODE_SIGN_STYLE = Automatic;',
         'CURRENT_PROJECT_VERSION = 1;',
         'DEVELOPMENT_TEAM = %s;' % DEVELOPMENT_TEAM,
