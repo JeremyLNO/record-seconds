@@ -1,6 +1,15 @@
 {
-  "originHash" : "703ae018d0776c9b12c8532711a7fbdd67eff8853d0480c914209b0548431e30",
+  "originHash" : "1c53e5f2a6094f25716823c2a6c20a98daab234931b3991c4e4aea34141bd7fe",
   "pins" : [
+    {
+      "identity" : "kitswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JeremyLNO/KitSwift.git",
+      "state" : {
+        "revision" : "dc2c327cebfd37db2ca7d0c64f7f13e4e25419b8",
+        "version" : "1.0.0"
+      }
+    },
     {
       "identity" : "onesignal-xcframework",
       "kind" : "remoteSourceControl",

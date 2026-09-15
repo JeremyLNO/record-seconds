@@ -5,9 +5,8 @@ Recursively scans RecordSeconds/ for .swift files and mirrors the directory tree
 nested PBXGroups. Deterministic UUIDs (hash of a role key) so re-runs are stable and
 diff-friendly. Single app target — no unit/UI test bundles, no extensions.
 
-Depends on one local Swift package (CrazyBeeLicense, at ../crazybee-license-kit) via
-an XCLocalSwiftPackageReference, and on one remote package (OneSignal) via an
-XCRemoteSwiftPackageReference. The OneSignal App ID lives in
+Depends on two remote Swift packages: OneSignal (push) and KitSwift (the shared
+CrazyBeeLicense kit, a private repo). The OneSignal App ID lives in
 Notifications/OneSignalConfig.swift; set it to nil and the SDK is never initialised.
 """
 import os
@@ -19,16 +18,21 @@ BUNDLE_ID = "company.lno.videoonesec"
 DEVELOPMENT_TEAM = "2E6D4Q69QB"
 SRC_DIR = "RecordSeconds"
 
-LOCAL_PACKAGES = [
-    # (name, relative path, [product names])
-    ("CrazyBeeLicense", "../crazybee-license-kit", ["CrazyBeeLicense"]),
-]
+# Plus aucun package local : le kit de licence était référencé par un chemin
+# (`../crazybee-license-kit`), ce qui obligeait la CI à le cloner à côté du dépôt et
+# faisait cohabiter un package local et un package distant dans le même graphe — la
+# combinaison qui fige la résolution sur les runners GitHub (cf. la fiche mémoire
+# testflight_ci_pieges). Il est désormais consommé comme n'importe quelle dépendance.
+LOCAL_PACKAGES = []
 
 # (name, repository URL, exact version, [product names]). Pinned to an exact version on
 # OneSignal's Stable track — a version *range* resolves to their "Current" track instead.
 # Only `OneSignalFramework` is linked (no InAppMessages / Location).
 REMOTE_PACKAGES = [
     ("OneSignal-XCFramework", "https://github.com/OneSignal/OneSignal-XCFramework", "5.5.1", ["OneSignalFramework"]),
+    # Dépôt privé : en local, le trousseau macOS fournit l'identifiant ; en CI, le PAT
+    # est injecté par un `url.<...>.insteadOf` sur https://github.com/.
+    ("KitSwift", "https://github.com/JeremyLNO/KitSwift.git", "1.0.0", ["CrazyBeeLicense"]),
 ]
 
 
@@ -291,6 +295,12 @@ if LOCAL_PACKAGES:
         L('\t\t};')
     L("/* End XCLocalSwiftPackageReference section */")
 
+# Les produits des DEUX sortes de packages vivent dans la même section. Elle était
+# écrite sous `if LOCAL_PACKAGES:` — le jour où la liste locale s'est vidée, la section
+# a disparu avec elle et les produits distants n'étaient plus liés à la cible, alors que
+# la résolution, elle, réussissait : « Unable to resolve module dependency » à la
+# compilation seulement.
+if LOCAL_PACKAGES or REMOTE_PACKAGES:
     L("\n/* Begin XCSwiftPackageProductDependency section */")
     for name, path, products in LOCAL_PACKAGES:
         for prod in products:
