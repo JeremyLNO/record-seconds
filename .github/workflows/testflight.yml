@@ -101,31 +101,21 @@ jobs:
         # trois dépôts sont restés figés juste après « Checking out 5.5.1 of
         # package OneSignal-XCFramework » et GitHub ne les a tués qu'au bout de
         # SIX heures. Ici, ça échoue en 10 minutes et ça se voit.
-        timeout-minutes: 12
+        timeout-minutes: 8
         run: |
-          # Contrôle réseau : OneSignal-XCFramework est distribué en binaryTarget,
-          # donc la résolution TÉLÉCHARGE des archives depuis GitHub Releases. Si ce
-          # sont elles qui bloquent, le curl le dira avant xcodebuild.
-          echo "--- contrôle des artefacts OneSignal ---"
-          curl -sSL --max-time 120 -o /tmp/onesignal-probe.zip -w 'http=%{http_code} size=%{size_download} time=%{time_total}\n' \
-            https://github.com/OneSignal/OneSignal-XCFramework/releases/download/5.5.1/OneSignalFramework.xcframework.zip || echo "curl a échoué (code $?)"
-          ls -la /tmp/onesignal-probe.zip 2>/dev/null || true
-
-          echo "--- résolution (caches isolés dans le workspace) ---"
+          # xcodebuild se fige dans -[Xcode3CommandLineBuildTool
+          # waitForRemoteSourcePackagesToFinishLoading] : une attente KVO qui ne
+          # bascule jamais (pile relevée le 2026-09-15 ; aucun git ni swift ne tourne
+          # encore, le travail est fini). Ça n'arrive que depuis qu'il y a des paquets
+          # DISTANTS dans le graphe. -scmProvider system fait passer les checkouts par
+          # le git du système au lieu du libgit2 interne d'Xcode, dont dépend cette
+          # notification.
           xcodebuild -resolvePackageDependencies \
             -project RecordSeconds.xcodeproj \
             -scheme RecordSeconds \
+            -scmProvider system \
             -clonedSourcePackagesDirPath "$PWD/build/SourcePackages" \
-            -packageCachePath "$PWD/build/PackageCache" \
-            -verbose &
-          XCB=$!
-          # Si ça fige, prendre une pile AVANT que GitHub ne tue l'étape : c'est la
-          # seule façon de savoir sur quoi SwiftPM attend.
-          ( sleep 420; echo "--- toujours en cours, pile des processus ---"; \
-            pgrep -fl 'swift|xcodebuild' || true; \
-            for pid in $(pgrep -f 'swiftpm|swift-frontend|xcodebuild'); do \
-              echo "=== sample $pid ==="; sample $pid 3 -mayDie 2>/dev/null | head -60; done ) &
-          wait $XCB
+            -packageCachePath "$PWD/build/PackageCache"
 
       - name: Archive (signed, automatic provisioning)
         env:
@@ -143,6 +133,7 @@ jobs:
             -project RecordSeconds.xcodeproj \
             -scheme RecordSeconds \
             -disableAutomaticPackageResolution \
+            -scmProvider system \
             -clonedSourcePackagesDirPath "$PWD/build/SourcePackages" \
             -packageCachePath "$PWD/build/PackageCache" \
             -configuration Release \
