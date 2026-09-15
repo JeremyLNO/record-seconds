@@ -7,6 +7,8 @@ name: TestFlight Release
 #   ASC_KEY_P8              — full contents of the AuthKey_<id>.p8 file
 #   IOS_DEV_CERT_P12        — base64 of an exported "Apple Development" .p12
 #   IOS_DEV_CERT_PASSWORD   — the password that .p12 was exported with
+# GH_PAT n'est plus utilisé : les dépendances sont vendorées sous Vendor/, il n'y a
+# plus de dépôt privé à cloner pendant la résolution.
 # The API key comes from App Store Connect → Users and Access → Integrations
 # → App Store Connect API (NOT an APNs key — different key, same portal
 # family). xcodebuild archive with automatic signing always wants an "Apple
@@ -35,17 +37,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Authentifier SwiftPM auprès du dépôt privé du kit
-        # CrazyBeeLicense est désormais une dépendance SPM distante (dépôt privé
-        # JeremyLNO/KitSwift), plus un dossier cloné à côté du dépôt. Elle l'était :
-        # un package local et un package distant dans le même graphe figeaient la
-        # résolution sur les runners GitHub, indéfiniment et sans un mot.
-        # SwiftPM passe par git, donc il suffit de réécrire l'URL avec le jeton.
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          git config --global url."https://x-access-token:${GH_PAT}@github.com/".insteadOf "https://github.com/"
 
       - name: Select latest available Xcode
         run: |
@@ -92,28 +83,17 @@ jobs:
           }
 
       - name: Resolve Swift packages
-        env:
-          # Un git qui réclame des identifiants dans un runner n'a personne pour
-          # répondre : il attend indéfiniment. Avec ça, il échoue et se nomme.
-          GIT_TERMINAL_PROMPT: '0'
-        # Résolu à part, avec son propre chrono. Une résolution qui se bloque
-        # *dans* `xcodebuild archive` n'a aucun timeout à elle : le 2026-09-14,
-        # trois dépôts sont restés figés juste après « Checking out 5.5.1 of
-        # package OneSignal-XCFramework » et GitHub ne les a tués qu'au bout de
-        # SIX heures. Ici, ça échoue en 10 minutes et ça se voit.
-        timeout-minutes: 8
+        # Les deux dépendances sont vendorées sous Vendor/ : la résolution ne touche
+        # pas au réseau et prend une seconde. Le minuteur reste comme filet, parce
+        # qu'une résolution bloquée *dans* `xcodebuild archive` n'en a aucun : avec des
+        # paquets distants, xcodebuild restait figé dans
+        # waitForRemoteSourcePackagesToFinishLoading jusqu'à ce que GitHub le tue au
+        # bout de SIX heures.
+        timeout-minutes: 5
         run: |
-          # xcodebuild se fige dans -[Xcode3CommandLineBuildTool
-          # waitForRemoteSourcePackagesToFinishLoading] : une attente KVO qui ne
-          # bascule jamais (pile relevée le 2026-09-15 ; aucun git ni swift ne tourne
-          # encore, le travail est fini). Ça n'arrive que depuis qu'il y a des paquets
-          # DISTANTS dans le graphe. -scmProvider system fait passer les checkouts par
-          # le git du système au lieu du libgit2 interne d'Xcode, dont dépend cette
-          # notification.
           xcodebuild -resolvePackageDependencies \
             -project RecordSeconds.xcodeproj \
             -scheme RecordSeconds \
-            -scmProvider system \
             -clonedSourcePackagesDirPath "$PWD/build/SourcePackages" \
             -packageCachePath "$PWD/build/PackageCache"
 
@@ -133,7 +113,6 @@ jobs:
             -project RecordSeconds.xcodeproj \
             -scheme RecordSeconds \
             -disableAutomaticPackageResolution \
-            -scmProvider system \
             -clonedSourcePackagesDirPath "$PWD/build/SourcePackages" \
             -packageCachePath "$PWD/build/PackageCache" \
             -configuration Release \

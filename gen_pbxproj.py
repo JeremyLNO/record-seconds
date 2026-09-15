@@ -18,22 +18,22 @@ BUNDLE_ID = "company.lno.videoonesec"
 DEVELOPMENT_TEAM = "2E6D4Q69QB"
 SRC_DIR = "RecordSeconds"
 
-# Plus aucun package local : le kit de licence était référencé par un chemin
-# (`../crazybee-license-kit`), ce qui obligeait la CI à le cloner à côté du dépôt et
-# faisait cohabiter un package local et un package distant dans le même graphe — la
-# combinaison qui fige la résolution sur les runners GitHub (cf. la fiche mémoire
-# testflight_ci_pieges). Il est désormais consommé comme n'importe quelle dépendance.
-LOCAL_PACKAGES = []
-
-# (name, repository URL, exact version, [product names]). Pinned to an exact version on
-# OneSignal's Stable track — a version *range* resolves to their "Current" track instead.
-# Only `OneSignalFramework` is linked (no InAppMessages / Location).
-REMOTE_PACKAGES = [
-    ("OneSignal-XCFramework", "https://github.com/OneSignal/OneSignal-XCFramework", "5.5.1", ["OneSignalFramework"]),
-    # Dépôt privé : en local, le trousseau macOS fournit l'identifiant ; en CI, le PAT
-    # est injecté par un `url.<...>.insteadOf` sur https://github.com/.
-    ("KitSwift", "https://github.com/JeremyLNO/KitSwift.git", "1.0.0", ["CrazyBeeLicense"]),
+# Les deux dépendances sont VENDORÉES sous Vendor/ et référencées comme paquets
+# locaux. Pas par goût : dès qu'un paquet DISTANT entre dans le graphe, xcodebuild se
+# fige sur les runners GitHub dans -[Xcode3CommandLineBuildTool
+# waitForRemoteSourcePackagesToFinishLoading] — les checkouts finissent en quelques
+# secondes, puis une condition KVO ne bascule jamais et l'étape meurt sur son minuteur
+# (pile relevée le 2026-09-15). Un paquet local n'emprunte pas ce chemin.
+#
+# Pour mettre à jour : recopier depuis la source amont et noter la version dans le
+# VENDORED.md du dossier concerné.
+LOCAL_PACKAGES = [
+    # (name, relative path, [product names])
+    ("CrazyBeeLicense", "Vendor/CrazyBeeLicense", ["CrazyBeeLicense"]),
+    ("OneSignalXCFramework", "Vendor/OneSignalXCFramework", ["OneSignalFramework"]),
 ]
+
+REMOTE_PACKAGES = []
 
 
 def uid(key):

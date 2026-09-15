@@ -3,3 +3,4 @@ build/
 xcuserdata/
 .DS_Store
 *.xcodeproj/-Xcc/
+Vendor/*/.build/
