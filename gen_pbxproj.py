@@ -56,6 +56,9 @@ def find_swift_files(top_dir):
 
 app_swift_files = find_swift_files(SRC_DIR)
 assets_path = f"{SRC_DIR}/Assets.xcassets"
+# Local StoreKit configuration. It is NOT a build resource — it is attached to the
+# scheme below, which is the only thing that makes StoreKit Testing pick it up.
+storekit_path = "VideoOneSec.storekit"
 
 # ---- UUID registries -----------------------------------------------------
 _group_uids = {}
@@ -99,6 +102,7 @@ app_cfg_list = uid("cfglist.app")
 proj_cfg_list = uid("cfglist.project")
 
 assets_ref = fileref_uid(assets_path)
+storekit_ref = fileref_uid(storekit_path)
 app_build_files = {f: uid("buildfile.app.sources." + f) for f in app_swift_files}
 assets_build_file = uid("buildfile.assets")
 
@@ -184,6 +188,7 @@ L('\t\t%s /* %s.app */ = {isa = PBXFileReference; explicitFileType = wrapper.app
 for f in sorted(set(app_swift_files)):
     L('\t\t%s /* %s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "%s"; sourceTree = "<group>"; };' % (fileref_uid(f), os.path.basename(f), os.path.basename(f)))
 L('\t\t%s /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };' % assets_ref)
+L('\t\t%s /* %s */ = {isa = PBXFileReference; lastKnownFileType = text; path = %s; sourceTree = "<group>"; };' % (storekit_ref, storekit_path, storekit_path))
 L("/* End PBXFileReference section */")
 
 # ---- PBXFrameworksBuildPhase ------------------------------------------------
@@ -216,6 +221,7 @@ L('\t\t%s = {' % main_group)
 L('\t\t\tisa = PBXGroup;')
 L('\t\t\tchildren = (')
 L('\t\t\t\t%s /* %s */,' % (app_group_uid, SRC_DIR))
+L('\t\t\t\t%s /* %s */,' % (storekit_ref, storekit_path))
 L('\t\t\t\t%s /* Products */,' % products_group)
 L('\t\t\t);')
 L('\t\t\tsourceTree = "<group>";')
@@ -503,6 +509,11 @@ scheme_xml = (
     '      debugDocumentVersioning = "YES"\n'
     '      debugServiceExtension = "internal"\n'
     '      allowLocationSimulation = "YES">\n'
+    # Without this, StoreKit returns no products when running from Xcode/the Simulator:
+    # the local configuration is bound to the scheme, not to the target.
+    '      <StoreKitConfigurationFileReference\n'
+    '         identifier = "../../../VideoOneSec.storekit">\n'
+    '      </StoreKitConfigurationFileReference>\n'
     '      <BuildableProductRunnable runnableDebuggingMode = "0">\n'
     + buildable_ref(app_target, PROJ + ".app") +
     '      </BuildableProductRunnable>\n'

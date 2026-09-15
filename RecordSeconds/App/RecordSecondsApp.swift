@@ -46,23 +46,24 @@ private struct OnboardingGate: View {
     }
 }
 
-/// Gates the whole app behind the license state — trial running or a valid license
-/// shows `RootView`, otherwise the shared `LicenseLockedView` paywall.
+/// Gates the whole app behind entitlement: the 7-day free trial (run by
+/// CrazyBeeLicense) or a Pro purchase. Once the trial is over, the StoreKit paywall
+/// takes over — on iOS the unlock is an In-App Purchase, never a licence key.
 private struct AppGate: View {
     @ObservedObject private var license = AppLicense.manager
+    @ObservedObject private var store = ProStore.shared
 
     var body: some View {
         Group {
-            if license.isFunctional {
+            if license.isFunctional || store.isPro {
                 RootView()
             } else {
-                LicenseLockedView(
-                    manager: license,
-                    features: AppLicense.features,
-                    logo: Image("CrazyBeeLabsLogo")
-                )
+                PaywallView(isGate: true)
             }
         }
-        .task { await license.refresh() }
+        .task {
+            await license.refresh()
+            await store.refreshEntitlement()
+        }
     }
 }

@@ -4,7 +4,9 @@ import CrazyBeeLicense
 
 struct SettingsView: View {
     @ObservedObject private var settings = AppSettings.shared
+    @ObservedObject private var store = ProStore.shared
     @Query(sort: \Project.sortIndex) private var projects: [Project]
+    @State private var showPaywall = false
 
     var body: some View {
         NavigationStack {
@@ -14,7 +16,7 @@ struct SettingsView: View {
                 languageSection
                 notificationsSection
                 accountSection
-                licenseSection
+                proSection
                 supportSection
                 Section {
                     BrandFooter()
@@ -22,6 +24,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle(L.t("settings"))
+            .sheet(isPresented: $showPaywall) { PaywallView() }
         }
     }
 
@@ -106,9 +109,20 @@ struct SettingsView: View {
 
     // MARK: - License
 
-    private var licenseSection: some View {
-        Section(L.t("settings_license")) {
-            LicenseSettingsView(manager: AppLicense.manager)
+    /// Subscription status, not a licence key: on iOS the unlock is an In-App Purchase,
+    /// so this offers the paywall and the Restore button App Review expects.
+    private var proSection: some View {
+        Section(L.t("settings_pro")) {
+            if AppLicense.isPaid {
+                Label(L.t("settings_pro_active"), systemImage: "checkmark.seal.fill")
+                    .foregroundStyle(.primary)
+                Link(L.t("settings_manage_subscription"),
+                     destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
+            } else {
+                Button(L.t("settings_pro_upgrade")) { showPaywall = true }
+                Button(L.t("pay_restore")) { Task { await ProStore.shared.restore() } }
+                    .font(.subheadline)
+            }
         }
     }
 

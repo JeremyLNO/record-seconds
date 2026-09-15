@@ -174,6 +174,51 @@ enum L {
         "settings_clip_duration": [.en: "Clip duration", .fr: "Durée du clip", .es: "Duración del clip", .de: "Clip-Dauer", .pt: "Duração do clipe"],
         "settings_quick_capture_target": [.en: "Save quick captures to", .fr: "Enregistrer les captures rapides dans", .es: "Guardar capturas rápidas en", .de: "Schnellaufnahmen speichern in", .pt: "Guardar capturas rápidas em"],
         "settings_no_default_project": [.en: "None set", .fr: "Aucun défini", .es: "Ninguno definido", .de: "Keines festgelegt", .pt: "Nenhum definido"],
+        // MARK: Paywall / In-App Purchase
+        "pay_app_tagline": [.en: "One second a day, every day.", .fr: "Une seconde par jour, chaque jour.", .es: "Un segundo al día, cada día.", .de: "Eine Sekunde pro Tag, jeden Tag.", .pt: "Um segundo por dia, todos os dias."],
+        "pay_trial_ended": [.en: "Your free trial has ended", .fr: "Votre essai gratuit est terminé", .es: "Tu prueba gratuita ha terminado", .de: "Ihre kostenlose Testphase ist beendet", .pt: "O seu teste gratuito terminou"],
+        "pay_get_pro": [.en: "Get Video One Sec Pro", .fr: "Passez à Video One Sec Pro", .es: "Consigue Video One Sec Pro", .de: "Video One Sec Pro holen", .pt: "Obtenha o Video One Sec Pro"],
+        "pay_subtitle": [.en: "Keep every project, and export movies without a watermark.", .fr: "Conservez tous vos projets et exportez vos films sans watermark.", .es: "Conserva todos tus proyectos y exporta películas sin marca de agua.", .de: "Behalten Sie alle Projekte und exportieren Sie Filme ohne Wasserzeichen.", .pt: "Mantenha todos os projetos e exporte filmes sem marca de água."],
+        "pay_restore": [.en: "Restore purchases", .fr: "Restaurer mes achats", .es: "Restaurar compras", .de: "Käufe wiederherstellen", .pt: "Restaurar compras"],
+        "pay_continue": [.en: "Continue", .fr: "Continuer", .es: "Continuar", .de: "Weiter", .pt: "Continuar"],
+        "pay_subscribe": [.en: "Subscribe", .fr: "S'abonner", .es: "Suscribirse", .de: "Abonnieren", .pt: "Subscrever"],
+        "pay_buy_once": [.en: "Buy once", .fr: "Acheter une fois", .es: "Comprar una vez", .de: "Einmalig kaufen", .pt: "Comprar uma vez"],
+        "pay_start_trial": [.en: "Start free trial", .fr: "Démarrer l'essai gratuit", .es: "Empezar prueba gratis", .de: "Kostenlos testen", .pt: "Iniciar teste gratuito"],
+        "pay_store_unavailable": [.en: "The App Store is unavailable right now. Please try again in a moment.", .fr: "L'App Store est indisponible pour le moment. Réessayez dans un instant.", .es: "El App Store no está disponible ahora mismo. Inténtalo de nuevo en un momento.", .de: "Der App Store ist gerade nicht verfügbar. Bitte versuchen Sie es gleich erneut.", .pt: "A App Store está indisponível de momento. Tente novamente daqui a pouco."],
+        "pay_error_unverified": [.en: "That purchase couldn't be verified with the App Store.", .fr: "Cet achat n'a pas pu être vérifié auprès de l'App Store.", .es: "No se pudo verificar esa compra con el App Store.", .de: "Dieser Kauf konnte nicht mit dem App Store verifiziert werden.", .pt: "Não foi possível verificar essa compra na App Store."],
+        "pay_pending": [.en: "Your purchase is pending approval.", .fr: "Votre achat est en attente d'approbation.", .es: "Tu compra está pendiente de aprobación.", .de: "Ihr Kauf wartet auf Genehmigung.", .pt: "A sua compra aguarda aprovação."],
+        "pay_nothing_to_restore": [.en: "No previous purchase found on this Apple Account.", .fr: "Aucun achat précédent trouvé sur ce compte Apple.", .es: "No se encontró ninguna compra anterior en esta cuenta de Apple.", .de: "Kein früherer Kauf mit diesem Apple-Account gefunden.", .pt: "Nenhuma compra anterior encontrada nesta conta Apple."],
+        "pay_free_trial_length": [.en: "%d %@ free, then renews", .fr: "%d %@ offerts, puis renouvellement", .es: "%d %@ gratis, luego se renueva", .de: "%d %@ gratis, danach Verlängerung", .pt: "%d %@ grátis, depois renova"],
+        "pay_terms": [.en: "Payment is charged to your Apple Account. A subscription renews automatically unless cancelled at least 24 hours before the end of the period; manage or cancel it in your Apple Account settings.", .fr: "Le paiement est débité de votre compte Apple. Un abonnement se renouvelle automatiquement sauf résiliation au moins 24 heures avant la fin de la période ; gérez-le ou résiliez-le dans les réglages de votre compte Apple.", .es: "El pago se carga a tu cuenta de Apple. La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del fin del periodo; gestiónala o cancélala en los ajustes de tu cuenta de Apple.", .de: "Die Zahlung erfolgt über Ihren Apple-Account. Ein Abo verlängert sich automatisch, sofern es nicht mindestens 24 Stunden vor Ablauf gekündigt wird; verwalten oder kündigen Sie es in den Einstellungen Ihres Apple-Accounts.", .pt: "O pagamento é debitado na sua conta Apple. A subscrição renova-se automaticamente, salvo cancelamento pelo menos 24 horas antes do fim do período; faça a gestão ou cancele nas definições da sua conta Apple."],
+        "privacy_policy": [.en: "Privacy", .fr: "Confidentialité", .es: "Privacidad", .de: "Datenschutz", .pt: "Privacidade"],
+        "terms_of_use": [.en: "Terms of use", .fr: "Conditions d'utilisation", .es: "Términos de uso", .de: "Nutzungsbedingungen", .pt: "Termos de utilização"],
+
+        // MARK: Plans
+        "plan_yearly": [.en: "Yearly", .fr: "Annuel", .es: "Anual", .de: "Jährlich", .pt: "Anual"],
+        "plan_yearly_detail": [.en: "Full access, billed once a year.", .fr: "Accès complet, facturé une fois par an.", .es: "Acceso completo, facturado una vez al año.", .de: "Voller Zugriff, einmal jährlich abgerechnet.", .pt: "Acesso completo, faturado uma vez por ano."],
+        "plan_lifetime": [.en: "Lifetime", .fr: "À vie", .es: "De por vida", .de: "Lebenslang", .pt: "Vitalício"],
+        "plan_lifetime_detail": [.en: "One payment, yours forever.", .fr: "Un seul paiement, à vous pour toujours.", .es: "Un solo pago, tuyo para siempre.", .de: "Eine Zahlung, für immer Ihres.", .pt: "Um único pagamento, seu para sempre."],
+        "period_day": [.en: "day", .fr: "jour", .es: "día", .de: "Tag", .pt: "dia"],
+        "period_days": [.en: "days", .fr: "jours", .es: "días", .de: "Tage", .pt: "dias"],
+        "period_week": [.en: "week", .fr: "semaine", .es: "semana", .de: "Woche", .pt: "semana"],
+        "period_weeks": [.en: "weeks", .fr: "semaines", .es: "semanas", .de: "Wochen", .pt: "semanas"],
+        "period_month": [.en: "month", .fr: "mois", .es: "mes", .de: "Monat", .pt: "mês"],
+        "period_months": [.en: "months", .fr: "mois", .es: "meses", .de: "Monate", .pt: "meses"],
+        "period_year": [.en: "year", .fr: "an", .es: "año", .de: "Jahr", .pt: "ano"],
+        "period_years": [.en: "years", .fr: "ans", .es: "años", .de: "Jahre", .pt: "anos"],
+
+        // MARK: Pro selling points
+        "pro_feature_no_watermark_title": [.en: "No watermark", .fr: "Sans watermark", .es: "Sin marca de agua", .de: "Ohne Wasserzeichen", .pt: "Sem marca de água"],
+        "pro_feature_no_watermark_detail": [.en: "Exported movies are clean — nothing added over your footage.", .fr: "Vos films exportés sont nets — rien d'ajouté par-dessus vos images.", .es: "Tus películas exportadas quedan limpias, sin nada encima de tus imágenes.", .de: "Exportierte Filme bleiben sauber — nichts über Ihrem Material.", .pt: "Os filmes exportados ficam limpos — nada por cima das suas imagens."],
+        "pro_feature_cards_title": [.en: "Intro and end are optional", .fr: "Intro et fin optionnelles", .es: "Introducción y final opcionales", .de: "Intro und Ende optional", .pt: "Introdução e fim opcionais"],
+        "pro_feature_cards_detail": [.en: "Keep the title cards, or drop either one per project.", .fr: "Gardez les écrans de titre, ou retirez-les projet par projet.", .es: "Conserva las tarjetas de título o quita cualquiera de ellas por proyecto.", .de: "Behalten Sie die Titelkarten oder entfernen Sie sie je Projekt.", .pt: "Mantenha os cartões de título ou remova qualquer um por projeto."],
+
+        // MARK: Settings — Pro
+        "settings_pro": [.en: "Video One Sec Pro", .fr: "Video One Sec Pro", .es: "Video One Sec Pro", .de: "Video One Sec Pro", .pt: "Video One Sec Pro"],
+        "settings_pro_active": [.en: "Pro is active", .fr: "Pro est actif", .es: "Pro está activo", .de: "Pro ist aktiv", .pt: "O Pro está ativo"],
+        "settings_pro_upgrade": [.en: "Upgrade to Pro", .fr: "Passer à Pro", .es: "Cambiar a Pro", .de: "Auf Pro upgraden", .pt: "Mudar para Pro"],
+        "settings_manage_subscription": [.en: "Manage subscription", .fr: "Gérer l'abonnement", .es: "Gestionar suscripción", .de: "Abo verwalten", .pt: "Gerir subscrição"],
+
         "settings_language_system": [.en: "System default", .fr: "Langue du système", .es: "Idioma del sistema", .de: "Systemsprache", .pt: "Idioma do sistema"],
     ]
 }

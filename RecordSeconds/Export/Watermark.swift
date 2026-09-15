@@ -13,7 +13,7 @@ enum Watermark {
     /// badge (`WatermarkPass` on export, the preview player on screen) using this.
     static let bottomInsetRatio: CGFloat = 0.035
 
-    static var iconImage: UIImage? { UIImage(named: "WatermarkIcon") }
+    static var iconImage: UIImage? { UIImage(named: "AppIconDisplay") }
 
     // MARK: - SwiftUI (title cards)
 

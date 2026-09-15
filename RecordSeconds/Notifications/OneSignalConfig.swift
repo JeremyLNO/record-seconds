@@ -11,6 +11,9 @@ enum OneSignalConfig {
     static let appID: String? = "56552fac-ce5e-414d-a1df-9ea5f76ae7ed"
 
     static func startIfConfigured() {
+        // Screenshot/test runs skip the system permission alert, same convention as
+        // fasting-app / cycles-app.
+        if CommandLine.arguments.contains("-skipNotifPrompt") { return }
         guard let appID, !appID.isEmpty else { return }
         #if canImport(OneSignalFramework)
         OneSignal.initialize(appID, withLaunchOptions: nil)
